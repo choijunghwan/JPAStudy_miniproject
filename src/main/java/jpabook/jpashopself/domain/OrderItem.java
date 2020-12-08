@@ -1,7 +1,10 @@
 package jpabook.jpashopself.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jpabook.jpashopself.domain.item.Item;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -9,6 +12,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "order_item")
 @Getter @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderItem {
 
     @Id @GeneratedValue
@@ -18,6 +22,7 @@ public class OrderItem {
     private int orderPrice;
     private int count;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
