@@ -1,7 +1,8 @@
 package jpabook.jpashopself.repository;
 
-import jpabook.jpashopself.domain.Order;
-import jpabook.jpashopself.domain.OrderSearch;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import jpabook.jpashopself.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +30,7 @@ public class OrderRepository {
     }
 
     //주문 내역 조회
-    public List<Order> findAll(OrderSearch orderSearch) {
+    public List<Order> findAll_Old(OrderSearch orderSearch) {
         //language=JPAQL
         String jpql = "select o From Order o join o.member m";
         boolean isFirstCondition = true;
@@ -67,6 +68,33 @@ public class OrderRepository {
         return query.getResultList();
     }
 
+    public List<Order> findAll(OrderSearch orderSearch) {
+        JPAQueryFactory query = new JPAQueryFactory(em);
+
+        QOrder order = QOrder.order;
+        QMember member = QMember.member;
+
+        return query.select(order)
+                .from(order)
+                .join(order.member, member)
+                .where(statusEq(orderSearch.getOrderStatus()), nameLike(orderSearch.getMemberName()))
+                .limit(1000)
+                .fetch();
+    }
+
+    private BooleanExpression nameLike(String memberName) {
+        if (!StringUtils.hasText(memberName)) {
+            return null;
+        }
+        return QMember.member.name.like(memberName);
+    }
+
+    private BooleanExpression statusEq(OrderStatus statusCond) {
+        if (statusCond == null) {
+            return null;
+        }
+        return QOrder.order.status.eq(statusCond);
+    }
 
     public List<Order> findAllWithMemberDelivery() {
         return em.createQuery(
