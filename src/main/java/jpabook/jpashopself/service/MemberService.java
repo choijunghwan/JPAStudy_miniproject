@@ -1,5 +1,6 @@
 package jpabook.jpashopself.service;
 
+import jpabook.jpashopself.domain.Address;
 import jpabook.jpashopself.domain.Member;
 import jpabook.jpashopself.repository.MemberRepository;
 import jpabook.jpashopself.repository.MemberRepositoryOld;
@@ -50,5 +51,14 @@ public class MemberService {
     public void update(Long id, String name) {
         Member member = memberRepository.findById(id).get();
         member.setName(name);
+    }
+
+    @Transactional
+    public void updateAll(Long id, String name, String city, String street, String zipcode) {
+        Member member = memberRepository.findById(id).get();
+        member.setName(name);
+
+        Address address = new Address(city, street, zipcode);
+        member.setAddress(address);
     }
 }
