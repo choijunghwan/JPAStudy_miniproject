@@ -23,6 +23,9 @@ public class InitDb {
 
     private final InitService initService;
 
+    /**
+     * postConstruct 어노테이션을 쓰면 spring이 시작될때 실행된다.
+     */
     @PostConstruct
     public void init() {
         initService.dbInit1();

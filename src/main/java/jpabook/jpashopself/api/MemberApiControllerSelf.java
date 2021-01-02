@@ -121,7 +121,7 @@ public class MemberApiControllerSelf {
         List<Member> findMembers = memberService.findMembers();
         //엔티티 -> DTO 변환
         List<MemberDto> collect = findMembers.stream()
-                .map(m -> new MemberDto(m.getName(), m.getAddress().getCity(), m.getAddress().getStreet(), m.getAddress().getZipcode()))
+                .map(m -> new MemberDto(m.getName(), m.getAddress()))
                 .collect(Collectors.toList());
 
         return new Result(collect);
@@ -138,9 +138,7 @@ public class MemberApiControllerSelf {
     @AllArgsConstructor
     static class MemberDto {
         private String name;
-        private String city;
-        private String street;
-        private String zipcode;
+        private Address address;
     }
 
 }

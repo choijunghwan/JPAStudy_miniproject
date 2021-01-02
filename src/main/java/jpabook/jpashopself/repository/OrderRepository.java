@@ -29,6 +29,11 @@ public class OrderRepository {
         return em.find(Order.class, id);
     }
 
+    public List<Order> findAll() {
+        return em.createQuery("select o From Order o")
+                .getResultList();
+    }
+
     //주문 내역 조회
     public List<Order> findAll_Old(OrderSearch orderSearch) {
         //language=JPAQL
@@ -124,5 +129,13 @@ public class OrderRepository {
                 .setMaxResults(limit)
                 .getResultList();
 
+    }
+
+    public List<Order> findAllWithMemberDeliverySelf() {
+        return em.createQuery(
+                "select o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d", Order.class)
+                .getResultList();
     }
 }
